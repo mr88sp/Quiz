@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>سؤالات وصل کردنی سواد رسانه‌ای</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e5e7eb;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      background: rgba(2, 6, 23, 0.95);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .header h1 {
+      margin: 0;
+      color: #60a5fa;
+      font-size: 2rem;
+      text-align: center;
+      flex: 1;
+    }
+
+    .back-btn {
+      background: linear-gradient(145deg, #374151, #1f2937);
+      color: #e5e7eb;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+
+    .back-btn:hover {
+      background: linear-gradient(145deg, #4b5563, #374151);
+      transform: translateX(-5px);
+    }
+
+    .score-panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .score-card {
+      background: rgba(30, 41, 59, 0.6);
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid rgba(96, 165, 250, 0.2);
+    }
+
+    .score-label {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 5px;
+    }
+
+    .score-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #60a5fa;
+    }
+
+    .matching-section {
+      margin-bottom: 40px;
+      background: rgba(30, 41, 59, 0.3);
+      border-radius: 15px;
+      padding: 25px;
+      border: 1px solid rgba(96, 165, 250, 0.1);
+    }
+
+    .matching-section h2 {
+      text-align: center;
+      color: #c7d2fe;
+      margin-top: 0;
+      margin-bottom: 25px;
+      font-size: 1.5rem;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .matching-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 20px;
+    }
+
+    .column {
+      border: 2px solid #334155;
+      border-radius: 15px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      background: rgba(2, 6, 23, 0.6);
+      transition: border-color 0.3s;
+    }
+
+    .column.active {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+
+    .column-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: #93c5fd;
+      padding: 10px;
+      background: rgba(37, 99, 235, 0.1);
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .item {
+      background: rgba(30, 41, 59, 0.8);
+      border: 2px solid #4b5563;
+      border-radius: 12px;
+      padding: 15px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .item:hover {
+      border-color: #60a5fa;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .item.selected {
+      border-color: #2563eb;
+      background: rgba(37, 99, 235, 0.2);
+      animation: pulse 1.5s infinite;
+    }
+
+    .item.matched {
+      border-color: #16a34a;
+      background: rgba(22, 163, 74, 0.2);
+      cursor: default;
+    }
+
+    .item.wrong {
+      border-color: #dc2626;
+      background: rgba(220, 38, 38, 0.2);
+      animation: shake 0.5s;
+    }
+
+    .match-line {
+      position: absolute;
+      background: #60a5fa;
+      height: 3px;
+      pointer-events: none;
+      z-index: 1;
+      transform-origin: left;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 15px 25px;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      max-width: 250px;
+    }
+
+    .check-btn {
+      background: linear-gradient(145deg, #2563eb, #1d4ed8);
+      color: white;
+    }
+
+    .check-btn:hover {
+      background: linear-gradient(145deg, #1d4ed8, #2563eb);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+    }
+
+    .reset-btn {
+      background: linear-gradient(145deg, #374151, #1f2937);
+      color: #e5e7eb;
+    }
+
+    .reset-btn:hover {
+      background: linear-gradient(145deg, #4b5563, #374151);
+      transform: translateY(-2px);
+    }
+
+    .result-panel {
+      text-align: center;
+      margin-top: 15px;
+      padding: 20px;
+      border-radius: 12px;
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .result-panel.success {
+      background: rgba(22, 163, 74, 0.1);
+      border: 1px solid #16a34a;
+      color: #86efac;
+    }
+
+    .result-panel.error {
+      background: rgba(220, 38, 38, 0.1);
+      border: 1px solid #dc2626;
+      color: #fca5a5;
+    }
+
+    .result-panel.info {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid #3b82f6;
+      color: #93c5fd;
+    }
+
+    .final-result {
+      margin-top: 40px;
+      padding: 30px;
+      background: rgba(30, 41, 59, 0.8);
+      border-radius: 15px;
+      border: 1px solid rgba(96, 165, 250, 0.2);
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .final-result h3 {
+      color: #60a5fa;
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    .final-score {
+      font-size: 48px;
+      font-weight: bold;
+      color: #10b981;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .score-breakdown {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    .breakdown-item {
+      background: rgba(2, 6, 23, 0.6);
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .breakdown-label {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 5px;
+    }
+
+    .breakdown-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #e5e7eb;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+      }
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-5px);
+      }
+
+      75% {
+        transform: translateX(5px);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media(max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+
+      .matching-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .action-btn {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- هدر با دکمه برگشت -->
+    <div class="header">
+      <button class="back-btn" onclick="goBackToMenu()">
+        ← بازگشت به منوی اصلی
+      </button>
+      <h1>🔗 سؤالات وصل کردنی سواد رسانه‌ای</h1>
+    </div>
+
+    <!-- پنل امتیاز -->
+    <div class="score-panel">
+      <div class="score-card">
+        <div class="score-label">جدول‌های تکمیل شده</div>
+        <div class="score-value" id="completed-tables">0/2</div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">اتصال‌های صحیح</div>
+        <div class="score-value" id="correct-matches">0</div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">امتیاز فعلی</div>
+        <div class="score-value" id="current-score">0</div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">درصد موفقیت</div>
+        <div class="score-value" id="success-rate">0%</div>
+      </div>
+    </div>
+
+    <!-- جدول شماره ۱ -->
+    <div class="matching-section">
+      <h2>🎯 جدول شماره ۱: فنون اقناع</h2>
+      <div class="matching-container" id="matching1">
+        <div class="column" id="matching1-left"> <!-- تغییر: id="matching1-left" -->
+          <div class="column-header">ستون ب</div>
+        </div>
+        <div class="column" id="matching1-right"> <!-- تغییر: id="matching1-right" -->
+          <div class="column-header">ستون الف</div>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="action-btn reset-btn" onclick="resetMatches('matching1')">
+          🔄 اصلاح اتصال‌ها
+        </button>
+        <button class="action-btn check-btn" onclick="checkResult('matching1')">
+          ✅ بررسی پاسخ‌ها
+        </button>
+      </div>
+      <div class="result-panel" id="result1"></div>
+    </div>
+
+    <!-- جدول شماره ۲ -->
+    <div class="matching-section">
+      <h2>📚 جدول شماره ۲: لایه‌های پیام</h2>
+      <div class="matching-container" id="matching2">
+        <div class="column" id="matching2-left"> <!-- تغییر: id="matching2-left" -->
+          <div class="column-header">ستون ب</div>
+        </div>
+        <div class="column" id="matching2-right"> <!-- تغییر: id="matching2-right" -->
+          <div class="column-header">ستون الف</div>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="action-btn reset-btn" onclick="resetMatches('matching2')">
+          🔄 اصلاح اتصال‌ها
+        </button>
+        <button class="action-btn check-btn" onclick="checkResult('matching2')">
+          ✅ بررسی پاسخ‌ها
+        </button>
+      </div>
+      <div class="result-panel" id="result2"></div>
+    </div>
+
+    <!-- دکمه نمایش نتیجه نهایی -->
+    <div class="action-buttons" style="margin-top: 40px;">
+      <button class="action-btn check-btn" onclick="showFinalResults()" id="final-btn" style="max-width: 300px;">
+        🏆 نمایش نتیجه نهایی
+      </button>
+    </div>
+
+    <!-- پنل نتیجه نهایی -->
+    <div class="final-result" id="final-result">
+      <h3>🎉 نتیجه آزمون وصل کردنی</h3>
+      <div class="final-score" id="final-score-display">0%</div>
+
+      <div class="score-breakdown">
+        <div class="breakdown-item">
+          <div class="breakdown-label">جدول‌های تکمیل شده</div>
+          <div class="breakdown-value" id="final-completed">0/2</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-label">اتصال‌های صحیح</div>
+          <div class="breakdown-value" id="final-correct">0</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-label">مجموع امتیاز</div>
+          <div class="breakdown-value" id="final-total">0</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-label">درصد موفقیت</div>
+          <div class="breakdown-value" id="final-percentage">0%</div>
+        </div>
+      </div>
+
+      <div id="result-message" style="text-align: center; margin: 20px 0; font-size: 18px;"></div>
+
+      <div class="action-buttons">
+        <button class="action-btn reset-btn" onclick="restartQuiz()" style="max-width: 200px;">
+          🔄 شروع مجدد
+        </button>
+        <button class="action-btn check-btn" onclick="saveAndReturn()" style="max-width: 200px;">
+          💾 ذخیره و بازگشت
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // داده‌های سوالات
+    const tables = {
+      'matching1': {
+        leftItems: ["تداعی معانی", "گواهی دادن ستاره‌ها", "شدت", "ترس"],
+        rightItems: [
+          "نشان دادن کالا با احساسات شادی و قدرت",
+          "استفاده از چهره‌های محبوب",
+          "استفاده از کلمات پرطمطراق و بزرگ‌نمایی ویژگی‌ها",
+          "صحبت در مورد خطرات و ایجاد نگرانی‌ها"
+        ],
+        correctMatches: {
+          "تداعی معانی": "نشان دادن کالا با احساسات شادی و قدرت",
+          "گواهی دادن ستاره‌ها": "استفاده از چهره‌های محبوب",
+          "شدت": "استفاده از کلمات پرطمطراق و بزرگ‌نمایی ویژگی‌ها",
+          "ترس": "صحبت در مورد خطرات و ایجاد نگرانی‌ها"
+        },
+        completed: false,
+        score: 0
+      },
+      'matching2': {
+        leftItems: ["رسانه", "کلیشه", "فرامتن", "متن"],
+        rightItems: [
+          "هر چیزی که حامل پیام است",
+          "نسبت دادن و تعمیم صفت به یک گروه",
+          "شرایط زمانی، مکانی و فرهنگی دریافت پیام",
+          "آنچه مستقیماً در پیام می‌بینیم یا می‌شنویم"
+        ],
+        correctMatches: {
+          "رسانه": "هر چیزی که حامل پیام است",
+          "کلیشه": "نسبت دادن و تعمیم صفت به یک گروه",
+          "فرامتن": "شرایط زمانی، مکانی و فرهنگی دریافت پیام",
+          "متن": "آنچه مستقیماً در پیام می‌بینیم یا می‌شنویم"
+        },
+        completed: false,
+        score: 0
+      }
+    };
+
+    // متغیرهای سراسری
+    let totalCorrect = 0;
+    let totalPossible = 0;
+    let selectedItem = null;
+    const matches = {
+      'matching1': {},
+      'matching2': {}
+    };
+
+    // تابع برگشت به منوی اصلی
+    function goBackToMenu() {
+      if (totalCorrect > 0) {
+        if (confirm('آیا می‌خواهید به منوی اصلی بازگردید؟ نتایج ذخیره خواهد شد.')) {
+          saveScore();
+          window.location.href = 'index.html';
+        }
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+
+    // تابع ذخیره نمره
+    function saveScore() {
+      const percentage = totalPossible > 0 ? Math.round((totalCorrect / totalPossible) * 100) : 0;
+      localStorage.setItem('matchingScore', percentage);
+    }
+
+    // تابع ایجاد سوالات
+    // تابع ایجاد سوالات - نسخه اصلاح شده
+    function createMatchingTable(tableId) {
+      const table = tables[tableId];
+
+      // پیدا کردن ستون‌ها با استفاده از selector درست
+      const container = document.getElementById(tableId);
+      const columns = container.querySelectorAll('.column');
+
+      if (columns.length < 2) {
+        console.error('ستون‌ها پیدا نشدند!');
+        return;
+      }
+
+      const leftCol = columns[0];
+      const rightCol = columns[1];
+
+      // پاک کردن محتوای فعلی (به جز هدر)
+      leftCol.innerHTML = '<div class="column-header">ستون ب</div>';
+      rightCol.innerHTML = '<div class="column-header">ستون الف</div>';
+
+      // به هم زدن آیتم‌ها
+      const shuffledLeft = [...table.leftItems].sort(() => Math.random() - 0.5);
+      const shuffledRight = [...table.rightItems].sort(() => Math.random() - 0.5);
+
+      // اضافه کردن آیتم‌ها
+      shuffledLeft.forEach((item, index) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'item';
+        itemDiv.id = `${tableId}-left-${index}`;
+        itemDiv.textContent = item;
+        itemDiv.dataset.value = item;
+        itemDiv.addEventListener('click', () => selectItem(itemDiv, tableId, 'left'));
+        leftCol.appendChild(itemDiv);
+      });
+
+      shuffledRight.forEach((item, index) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'item';
+        itemDiv.id = `${tableId}-right-${index}`;
+        itemDiv.textContent = item;
+        itemDiv.dataset.value = item;
+        itemDiv.addEventListener('click', () => selectItem(itemDiv, tableId, 'right'));
+        rightCol.appendChild(itemDiv);
+      });
+    }
+
+    // تابع انتخاب آیتم
+    function selectItem(item, tableId, side) {
+      // اگر قبلاً وصل شده، کاری نکن
+      if (item.classList.contains('matched')) return;
+
+      const container = document.getElementById(tableId);
+
+      // حذف انتخاب قبلی در همین جدول
+      container.querySelectorAll('.item.selected').forEach(el => {
+        if (!el.classList.contains('matched')) {
+          el.classList.remove('selected');
+        }
+      });
+
+      // انتخاب آیتم جدید
+      item.classList.add('selected');
+
+      if (!selectedItem) {
+        // اولین آیتم انتخاب شده
+        selectedItem = { element: item, tableId, side };
+        // هایلایت ستون مربوطه
+        const column = side === 'left'
+          ? document.getElementById(`${tableId}-left`)
+          : document.getElementById(`${tableId}-right`);
+        column.classList.add('active');
+      } else {
+        // دومین آیتم انتخاب شده
+        if (selectedItem.tableId === tableId && selectedItem.side !== side) {
+          // ایجاد اتصال
+          createMatch(selectedItem.element, item, tableId);
+        }
+
+        // ریست انتخاب
+        container.querySelectorAll('.column').forEach(col => col.classList.remove('active'));
+        selectedItem = null;
+      }
+    }
+
+    // تابع ایجاد اتصال
+    function createMatch(leftItem, rightItem, tableId) {
+      const leftValue = leftItem.dataset.value;
+      const rightValue = rightItem.dataset.value;
+
+      // علامت‌گذاری آیتم‌ها به عنوان وصل شده
+      leftItem.classList.remove('selected');
+      rightItem.classList.remove('selected');
+      leftItem.classList.add('matched');
+      rightItem.classList.add('matched');
+
+      // ذخیره اتصال
+      matches[tableId][leftValue] = rightValue;
+
+      // ایجاد خط اتصال
+    
+
+      // به‌روزرساری نمایش
+      updateScoreDisplay();
+    }
+
+    // تابع بررسی پاسخ‌ها
+    function checkResult(tableId) {
+      const table = tables[tableId];
+      const userMatches = matches[tableId];
+      let correctCount = 0;
+
+      // بررسی هر اتصال
+      Object.keys(userMatches).forEach(leftValue => {
+        const userRightValue = userMatches[leftValue];
+        const correctRightValue = table.correctMatches[leftValue];
+
+        if (userRightValue === correctRightValue) {
+          correctCount++;
+        } else {
+          // مشخص کردن اتصال اشتباه
+          const leftItem = document.querySelector(`#${tableId}-left .item[data-value="${leftValue}"]`);
+          const rightItem = document.querySelector(`#${tableId}-right .item[data-value="${userRightValue}"]`);
+
+          if (leftItem) leftItem.classList.add('wrong');
+          if (rightItem) rightItem.classList.add('wrong');
+        }
+      });
+
+      table.score = correctCount;
+      table.completed = true;
+
+      // نمایش نتیجه
+      const resultPanel = document.getElementById(`result${tableId.slice(-1)}`);
+      resultPanel.style.display = 'block';
+
+      if (correctCount === table.leftItems.length) {
+        resultPanel.className = 'result-panel success';
+        resultPanel.innerHTML = `
+          <div style="font-size: 24px; margin-bottom: 10px;">✅</div>
+          <div style="font-size: 18px; font-weight: bold;">عالی!</div>
+          <div>شما همه اتصال‌ها را صحیح انجام داده‌اید.</div>
+        `;
+      } else {
+        resultPanel.className = 'result-panel info';
+        resultPanel.innerHTML = `
+          <div style="font-size: 24px; margin-bottom: 10px;">📊</div>
+          <div style="font-size: 18px; font-weight: bold;">${correctCount} از ${table.leftItems.length}</div>
+          <div>اتصال صحیح دارید.</div>
+        `;
+      }
+
+      updateScoreDisplay();
+    }
+
+    // تابع ریست اتصال‌ها
+    function resetMatches(tableId) {
+      const container = document.getElementById(tableId);
+
+      // پاک کردن خطوط اتصال
+      container.querySelectorAll('.match-line').forEach(line => line.remove());
+
+      // ریست وضعیت آیتم‌ها
+      container.querySelectorAll('.item').forEach(item => {
+        item.classList.remove('selected', 'matched', 'wrong');
+      });
+
+      // ریست متغیرها
+      matches[tableId] = {};
+      tables[tableId].completed = false;
+      tables[tableId].score = 0;
+
+      // پنهان کردن نتیجه
+      const resultPanel = document.getElementById(`result${tableId.slice(-1)}`);
+      resultPanel.style.display = 'none';
+
+      updateScoreDisplay();
+    }
+
+    // تابع به‌روزرسانی نمایش امتیاز
+    function updateScoreDisplay() {
+      let completedTables = 0;
+      let correctMatches = 0;
+      let totalMatches = 0;
+
+      Object.keys(tables).forEach(tableId => {
+        const table = tables[tableId];
+        totalMatches += table.leftItems.length;
+        correctMatches += table.score;
+        if (table.completed) completedTables++;
+      });
+
+      totalCorrect = correctMatches;
+      totalPossible = totalMatches;
+      const percentage = totalPossible > 0 ? Math.round((correctMatches / totalPossible) * 100) : 0;
+
+      document.getElementById('completed-tables').textContent = `${completedTables}/2`;
+      document.getElementById('correct-matches').textContent = correctMatches;
+      document.getElementById('current-score').textContent = correctMatches;
+      document.getElementById('success-rate').textContent = `${percentage}%`;
+
+      // فعال کردن دکمه نهایی اگر هر دو جدول تکمیل شده باشند
+      const finalBtn = document.getElementById('final-btn');
+      finalBtn.disabled = completedTables < 2;
+    }
+
+    // تابع نمایش نتایج نهایی
+    function showFinalResults() {
+      const percentage = Math.round((totalCorrect / totalPossible) * 100);
+
+      document.getElementById('final-score-display').textContent = `${percentage}%`;
+      document.getElementById('final-completed').textContent = '2/2';
+      document.getElementById('final-correct').textContent = totalCorrect;
+      document.getElementById('final-total').textContent = `${totalCorrect} از ${totalPossible}`;
+      document.getElementById('final-percentage').textContent = `${percentage}%`;
+
+      // نمایش پیام بر اساس نمره
+      const resultMessage = document.getElementById('result-message');
+      if (percentage === 100) {
+        resultMessage.innerHTML = '🏆 <strong>عالی!</strong> شما تسلط کامل بر مفاهیم دارید.';
+        resultMessage.style.color = '#10b981';
+      } else if (percentage >= 75) {
+        resultMessage.innerHTML = '👍 <strong>خوب است!</strong> دانش شما قابل قبول است.';
+        resultMessage.style.color = '#60a5fa';
+      } else if (percentage >= 50) {
+        resultMessage.innerHTML = '📚 <strong>نیاز به تمرین بیشتر دارید.</strong>';
+        resultMessage.style.color = '#fbbf24';
+      } else {
+        resultMessage.innerHTML = '📖 <strong>نیاز به مطالعه جدی دارید.</strong>';
+        resultMessage.style.color = '#ef4444';
+      }
+
+      // نمایش پنل نتایج
+      document.getElementById('final-result').style.display = 'block';
+      document.getElementById('final-result').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // تابع شروع مجدد
+    function restartQuiz() {
+      if (confirm('آیا می‌خواهید آزمون را مجدداً شروع کنید؟')) {
+        Object.keys(tables).forEach(tableId => {
+          tables[tableId].completed = false;
+          tables[tableId].score = 0;
+          matches[tableId] = {};
+          resetMatches(tableId);
+          createMatchingTable(tableId);
+        });
+
+        totalCorrect = 0;
+        totalPossible = 0;
+        selectedItem = null;
+
+        document.getElementById('final-result').style.display = 'none';
+        updateScoreDisplay();
+      }
+    }
+
+    // تابع ذخیره و بازگشت
+    function saveAndReturn() {
+      saveScore();
+      window.location.href = 'index.html';
+    }
+
+    // هنگام لود صفحه
+    document.addEventListener('DOMContentLoaded', function () {
+      // ایجاد جداول
+      createMatchingTable('matching1');
+      createMatchingTable('matching2');
+
+      // به‌روزرسانی اولیه نمایش
+      updateScoreDisplay();
+    });
+  </script>
+</body>
+
+</html>

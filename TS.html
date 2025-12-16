@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>آزمون تستی سواد رسانه‌ای</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e5e7eb;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: rgba(2, 6, 23, 0.95);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    }
+    
+    .header h1 {
+      margin: 0;
+      color: #60a5fa;
+      font-size: 2rem;
+      text-align: center;
+      flex: 1;
+    }
+    
+    .back-btn {
+      background: linear-gradient(145deg, #374151, #1f2937);
+      color: #e5e7eb;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+    
+    .back-btn:hover {
+      background: linear-gradient(145deg, #4b5563, #374151);
+      transform: translateX(-5px);
+    }
+    
+    .info-panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .info-card {
+      background: rgba(30, 41, 59, 0.6);
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid rgba(96, 165, 250, 0.2);
+    }
+    
+    .info-card .label {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 5px;
+    }
+    
+    .info-card .value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #60a5fa;
+    }
+    
+    .questions-container {
+      margin-bottom: 30px;
+    }
+    
+    .question {
+      margin-bottom: 20px;
+      border: 2px solid #1e293b;
+      border-radius: 15px;
+      padding: 20px;
+      background: rgba(30, 41, 59, 0.8);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .question:hover {
+      border-color: rgba(96, 165, 250, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .question-number {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(96, 165, 250, 0.2);
+      color: #60a5fa;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .question h3 {
+      margin: 0 0 20px 40px;
+      color: #e5e7eb;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .option {
+      background: rgba(2, 6, 23, 0.8);
+      border: 2px solid #334155;
+      border-radius: 10px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .option:hover {
+      border-color: #60a5fa;
+      background: rgba(96, 165, 250, 0.1);
+    }
+    
+    .option input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    
+    .option.correct {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: #22c55e;
+    }
+    
+    .option.incorrect {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: #ef4444;
+    }
+    
+    .option.disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .feedback {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .feedback.correct {
+      background: rgba(34, 197, 94, 0.1);
+      color: #22c55e;
+      border-right: 3px solid #22c55e;
+      display: block;
+    }
+    
+    .feedback.incorrect {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border-right: 3px solid #ef4444;
+      display: block;
+    }
+    
+    .question-status {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 11px;
+      background: #dc2626;
+      color: white;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+    
+    .question-status.answered {
+      background: #10b981;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      justify-content: center;
+    }
+    
+    .action-btn {
+      flex: 1;
+      padding: 18px;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      max-width: 300px;
+    }
+    
+    .submit-btn {
+      background: linear-gradient(145deg, #2563eb, #1d4ed8);
+      color: white;
+    }
+    
+    .submit-btn:hover {
+      background: linear-gradient(145deg, #1d4ed8, #2563eb);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+    }
+    
+    .submit-btn:disabled {
+      background: #4b5563;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .restart-btn {
+      background: linear-gradient(145deg, #374151, #1f2937);
+      color: #e5e7eb;
+    }
+    
+    .restart-btn:hover {
+      background: linear-gradient(145deg, #4b5563, #374151);
+      transform: translateY(-2px);
+    }
+    
+    .result-panel {
+      background: rgba(30, 41, 59, 0.8);
+      border-radius: 15px;
+      padding: 30px;
+      margin-top: 30px;
+      border: 1px solid rgba(96, 165, 250, 0.2);
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .result-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    
+    .result-header h3 {
+      color: #60a5fa;
+      font-size: 1.5rem;
+      margin: 0 0 10px 0;
+    }
+    
+    .score-display-large {
+      font-size: 48px;
+      font-weight: bold;
+      color: #10b981;
+      margin: 15px 0;
+    }
+    
+    .score-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 25px 0;
+    }
+    
+    .detail-item {
+      background: rgba(2, 6, 23, 0.6);
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    
+    .detail-label {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 5px;
+    }
+    
+    .detail-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #e5e7eb;
+    }
+    
+    .answers-summary {
+      margin-top: 25px;
+      border-top: 1px solid rgba(148, 163, 184, 0.2);
+      padding-top: 20px;
+    }
+    
+    .answers-summary h4 {
+      color: #fbbf24;
+      margin-bottom: 15px;
+    }
+    
+    .answers-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 10px;
+    }
+    
+    .answer-item {
+      font-size: 14px;
+      padding: 10px;
+      border-radius: 6px;
+      background: rgba(2, 6, 23, 0.6);
+    }
+    
+    .answer-correct {
+      color: #22c55e;
+    }
+    
+    .answer-incorrect {
+      color: #ef4444;
+    }
+    
+    .answer-unanswered {
+      color: #94a3b8;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media(max-width: 768px){
+      .container { padding: 20px; }
+      .action-buttons { flex-direction: column; }
+      .action-btn { max-width: 100%; }
+      .header { flex-direction: column; gap: 15px; }
+      .header h1 { font-size: 1.5rem; }
+      .question h3 { margin-left: 0; margin-top: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- هدر با دکمه برگشت -->
+    <div class="header">
+      <button class="back-btn" onclick="goBackToMenu()">
+        ← بازگشت به منوی اصلی
+      </button>
+      <h1>📝 آزمون تستی سواد رسانه‌ای</h1>
+    </div>
+    
+    <!-- پنل اطلاعات -->
+    <div class="info-panel">
+      <div class="info-card">
+        <div class="label">سوالات</div>
+        <div class="value" id="total-questions">9</div>
+      </div>
+      <div class="info-card">
+        <div class="label">پاسخ داده شده</div>
+        <div class="value" id="answered-count">0</div>
+      </div>
+      <div class="info-card">
+        <div class="label">امتیاز فعلی</div>
+        <div class="value" id="current-score">0</div>
+      </div>
+      <div class="info-card">
+        <div class="label">درصد موفقیت</div>
+        <div class="value" id="success-percentage">0%</div>
+      </div>
+    </div>
+    
+    <!-- سوالات -->
+    <div class="questions-container">
+      <div class="question" id="q1">
+        <div class="question-number">1</div>
+        <div class="question-status" id="status1">بدون پاسخ</div>
+        <h3>هدف نهایی سواد رسانه‌ای چیست؟</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" name="q1" value="الف" id="q1_a">
+            <label for="q1_a">الف) حفظ کردن اخبار</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q1" value="ب" id="q1_b">
+            <label for="q1_b">ب) تبدیل شدن به مخاطب فعال و تولیدکننده هوشمند</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q1" value="ج" id="q1_c">
+            <label for="q1_c">ج) عدم استفاده از تکنولوژی</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q1" value="د" id="q1_d">
+            <label for="q1_d">د) تبلیغ کالاهای خارجی</label>
+          </div>
+        </div>
+        <div class="feedback" id="feedback1"></div>
+      </div>
+      
+      <div class="question" id="q2">
+        <div class="question-number">2</div>
+        <div class="question-status" id="status2">بدون پاسخ</div>
+        <h3>کدام گزینه تعریف دقیق‌تری از «بازنمایی» است؟</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" name="q2" value="الف" id="q2_a">
+            <label for="q2_a">الف) نشان دادن عین واقعیت بدون هیچ تغییری</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q2" value="ب" id="q2_b">
+            <label for="q2_b">ب) ساختن یک واقعیت جدید با زاویه دید خاص رسانه</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q2" value="ج" id="q2_c">
+            <label for="q2_c">ج) دروغ گفتن درباره واقعیت</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q2" value="د" id="q2_d">
+            <label for="q2_d">د) سانسور کامل خبر</label>
+          </div>
+        </div>
+        <div class="feedback" id="feedback2"></div>
+      </div>
+      
+      <div class="question" id="q3">
+        <div class="question-number">3</div>
+        <div class="question-status" id="status3">بدون پاسخ</div>
+        <h3>در تحلیل پیام رسانه‌ای، «چه کسی پیام را تولید کرده است؟» به کدام مفهوم اشاره دارد؟</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" name="q3" value="الف" id="q3_a">
+            <label for="q3_a">الف) فرستنده و مؤلف</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q3" value="ب" id="q3_b">
+            <label for="q3_b">ب) مخاطب‌شناسی</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q3" value="ج" id="q3_c">
+            <label for="q3_c">ج) بازنمایی</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q3" value="د" id="q3_d">
+            <label for="q3_d">د) کلیشه‌سازی</label>
+          </div>
+        </div>
+        <div class="feedback" id="feedback3"></div>
+      </div>
+      
+      <div class="question" id="q4">
+        <div class="question-number">4</div>
+        <div class="question-status" id="status4">بدون پاسخ</div>
+        <h3>استفاده از عبارت «حراج فصل» یا «یکی بخر دو تا ببر» مربوط به کدام فن اقناع است؟</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" name="q4" value="الف" id="q4_a">
+            <label for="q4_a">الف) ترس</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q4" value="ب" id="q4_b">
+            <label for="q4_b">ب) تداعی معانی</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q4" value="ج" id="q4_c">
+            <label for="q4_c">ج) تطمیع</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q4" value="د" id="q4_d">
+            <label for="q4_d">د) نمادها</label>
+          </div>
+        </div>
+        <div class="feedback" id="feedback4"></div>
+      </div>
+      
+      <div class="question" id="q5">
+        <div class="question-number">5</div>
+        <div class="question-status" id="status5">بدون پاسخ</div>
+        <h3>کدام مورد جزو ویژگی‌های «کلیشه‌سازی» است؟</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" name="q5" value="الف" id="q5_a">
+            <label for="q5_a">الف) نگاه عمیق و دقیق به همه جزئیات</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q5" value="ب" id="q5_b">
+            <label for="q5_b">ب) قضاوت بر اساس واقعیت‌های فردی</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q5" value="ج" id="q5_c">
+            <label for="q5_c">ج) ارائه تصویر ساده‌سازی شده، اغراق‌آمیز و ثابت از یک گروه</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q5" value="د" id="q5_d">
+            <label for="q5_d">د) عدم تکرار یک نقش خاص</label>
+          </div>
+        </div>
+        <div class="feedback" id="feedback5"></div>
+      </div>
+      
+      <div class="question" id="q6">
+        <div class="question-number">6</div>
+        <div class="question-status" id="status6">بدون پاسخ</div>
+        <h3>«دروازه‌بانی خبری به چه معناست؟»</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" name="q6" value="الف" id="q6_a">
+            <label for="q6_a">الف) جلوگیری از ورود خبرنگاران به محل حادثه</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q6" value="ب" id="q6_b">
+            <label for="q6_b">ب) فرایند گزینش، حذف و برجسته‌سازی بخشی از اخبار توسط مدیران رسانه</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q6" value="ج" id="q6_c">
+            <label for="q6_c">ج) بخش زنده تمام اتفاقات جهان</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q6" value="د" id="q6_d">
+            <label for="q6_d">د) ترجمه اخبار خارجی</label>
+          </div>
+        </div>
+        <div class="feedback" id="feedback6"></div>
+      </div>
+      
+      <div class="question" id="q7">
+        <div class="question-number">7</div>
+        <div class="question-status" id="status7">بدون پاسخ</div>
+        <h3>در مثال آب معدنی «امورت» اینکه کلمه «موت» در عربی به معنای مرگ است و برای صادرات مناسب نیست، به کدام لایه پیام اشاره دارد؟</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" name="q7" value="الف" id="q7_a">
+            <label for="q7_a">الف) متن</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q7" value="ب" id="q7_b">
+            <label for="q7_b">ب) زیرمتن</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q7" value="ج" id="q7_c">
+            <label for="q7_c">ج) فرامتن (بافت فرهنگی)</label>
+          </div>
+        </div>
+        <div class="feedback" id="feedback7"></div>
+      </div>
+      
+      <div class="question" id="q8">
+        <div class="question-number">8</div>
+        <div class="question-status" id="status8">بدون پاسخ</div>
+        <h3>مخاطبی که پیام را تجزیه و تحلیل می‌کند و معنای پنهان آن را می‌یابد، چه نام دارد؟</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" name="q8" value="الف" id="q8_a">
+            <label for="q8_a">الف) مخاطب منفعل</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q8" value="ب" id="q8_b">
+            <label for="q8_b">ب) مخاطب فعال</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q8" value="ج" id="q8_c">
+            <label for="q8_c">ج) مخاطب عام</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q8" value="د" id="q8_d">
+            <label for="q8_d">د) مخاطب خنثی</label>
+          </div>
+        </div>
+        <div class="feedback" id="feedback8"></div>
+      </div>
+      
+      <div class="question" id="q9">
+        <div class="question-number">9</div>
+        <div class="question-status" id="status9">بدون پاسخ</div>
+        <h3>پیامی که در ذهن مخاطب شکل می‌گیرد اما در ظاهر کلمات یا تصاویر نیست، چه نام دارد؟</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" name="q9" value="الف" id="q9_a">
+            <label for="q9_a">الف) متن</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q9" value="ب" id="q9_b">
+            <label for="q9_b">ب) زیرمتن</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q9" value="ج" id="q9_c">
+            <label for="q9_c">ج) تفکیک</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="q9" value="د" id="q9_d">
+            <label for="q9_d">د) کلیشه</label>
+          </div>
+        </div>
+        <div class="feedback" id="feedback9"></div>
+      </div>
+    </div>
+    
+    <!-- دکمه‌های عملی -->
+    <div class="action-buttons">
+      <button class="action-btn submit-btn" onclick="showFinalResults()" id="submit-btn">
+        📊 نمایش نتیجه نهایی
+      </button>
+      <button class="action-btn restart-btn" onclick="restartQuiz()">
+        🔄 شروع مجدد آزمون
+      </button>
+    </div>
+    
+    <!-- پنل نتایج -->
+    <div class="result-panel" id="final-result">
+      <div class="result-header">
+        <h3>🎉 نتیجه آزمون شما</h3>
+        <div class="score-display-large" id="final-score">0%</div>
+        <p id="result-message"></p>
+      </div>
+      
+      <div class="score-details">
+        <div class="detail-item">
+          <div class="detail-label">پاسخ صحیح</div>
+          <div class="detail-value" id="correct-answers">0</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">پاسخ نادرست</div>
+          <div class="detail-value" id="incorrect-answers">0</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">بدون پاسخ</div>
+          <div class="detail-value" id="unanswered-count">9</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">درصد موفقیت</div>
+          <div class="detail-value" id="final-percentage">0%</div>
+        </div>
+      </div>
+      
+      <div class="answers-summary">
+        <h4>📋 خلاصه پاسخ‌های شما</h4>
+        <div class="answers-list" id="answers-summary"></div>
+      </div>
+      
+      <div class="action-buttons" style="margin-top: 30px;">
+        <button class="action-btn submit-btn" onclick="saveAndReturn()">
+          💾 ذخیره نتیجه و بازگشت
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const answers = {
+      q1: "ب",
+      q2: "ب",
+      q3: "الف",
+      q4: "ج",
+      q5: "ج",
+      q6: "ب",
+      q7: "ج",
+      q8: "ب",
+      q9: "ب"
+    };
+
+    let score = 0;
+    let answeredQuestions = 0;
+    const totalQuestions = Object.keys(answers).length;
+    const questionStates = new Array(totalQuestions).fill(false);
+    const userAnswers = new Array(totalQuestions).fill(null);
+
+    // تابع برگشت به منوی اصلی
+    function goBackToMenu() {
+      if (answeredQuestions > 0) {
+        if (confirm('آیا می‌خواهید به منوی اصلی بازگردید؟ نتایج ذخیره خواهد شد.')) {
+          saveScore();
+          window.location.href = 'index.html';
+        }
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+
+    // تابع ذخیره نمره
+    function saveScore() {
+      const percentage = Math.round((score / totalQuestions) * 100);
+      localStorage.setItem('testScore', percentage);
+    }
+
+    // تابع مدیریت انتخاب پاسخ
+    function handleAnswerSelection(questionNum, selectedValue) {
+      const index = questionNum - 1;
+      
+      // اگر قبلاً پاسخ داده شده
+      if (questionStates[index]) return;
+      
+      questionStates[index] = true;
+      answeredQuestions++;
+      userAnswers[index] = selectedValue;
+      
+      const questionDiv = document.getElementById(`q${questionNum}`);
+      const statusElement = document.getElementById(`status${questionNum}`);
+      const feedbackDiv = document.getElementById(`feedback${questionNum}`);
+      const correctAnswer = answers[`q${questionNum}`];
+      
+      // به‌روزرسانی وضعیت
+      statusElement.textContent = "پاسخ داده شده";
+      statusElement.classList.add("answered");
+      
+      // غیرفعال کردن همه گزینه‌های این سوال
+      const options = questionDiv.querySelectorAll('.option');
+      options.forEach(option => {
+        const input = option.querySelector('input');
+        input.disabled = true;
+        option.classList.add("disabled");
+        
+        // رنگ‌آمیزی گزینه صحیح
+        if (input.value === correctAnswer) {
+          option.classList.add("correct");
+        }
+        
+        // رنگ‌آمیزی گزینه انتخابی اگر اشتباه باشد
+        if (input.value === selectedValue && selectedValue !== correctAnswer) {
+          option.classList.add("incorrect");
+        }
+      });
+      
+      // نمایش فیدبک
+      if (selectedValue === correctAnswer) {
+        feedbackDiv.textContent = "✅ پاسخ شما صحیح است!";
+        feedbackDiv.className = "feedback correct";
+        score++;
+      } else {
+        feedbackDiv.textContent = `❌ پاسخ صحیح: گزینه ${correctAnswer}`;
+        feedbackDiv.className = "feedback incorrect";
+      }
+      
+      // به‌روزرسانی نمایش
+      updateDisplay();
+    }
+
+    // تابع به‌روزرسانی نمایش
+    function updateDisplay() {
+      document.getElementById('answered-count').textContent = answeredQuestions;
+      document.getElementById('current-score').textContent = score;
+      
+      const percentage = Math.round((score / totalQuestions) * 100);
+      document.getElementById('success-percentage').textContent = `${percentage}%`;
+      
+      // فعال/غیرفعال کردن دکمه ارسال
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = answeredQuestions === 0;
+    }
+
+    // تابع نمایش نتایج نهایی
+    function showFinalResults() {
+      const correctCount = score;
+      const incorrectCount = answeredQuestions - score;
+      const unansweredCount = totalQuestions - answeredQuestions;
+      const percentage = Math.round((score / totalQuestions) * 100);
+      
+      // ذخیره نمره
+      saveScore();
+      
+      // به‌روزرسانی نتایج
+      document.getElementById('final-score').textContent = `${percentage}%`;
+      document.getElementById('correct-answers').textContent = correctCount;
+      document.getElementById('incorrect-answers').textContent = incorrectCount;
+      document.getElementById('unanswered-count').textContent = unansweredCount;
+      document.getElementById('final-percentage').textContent = `${percentage}%`;
+      
+      // پیام بر اساس نمره
+      const resultMessage = document.getElementById('result-message');
+      if (percentage >= 90) {
+        resultMessage.textContent = "🏆 عالی! شما تسلط کاملی بر سواد رسانه‌ای دارید.";
+        resultMessage.style.color = "#10b981";
+      } else if (percentage >= 70) {
+        resultMessage.textContent = "👍 خوب است! دانش شما قابل قبول است.";
+        resultMessage.style.color = "#60a5fa";
+      } else if (percentage >= 50) {
+        resultMessage.textContent = "📚 نیاز به مطالعه بیشتر دارید.";
+        resultMessage.style.color = "#fbbf24";
+      } else {
+        resultMessage.textContent = "📖 نیاز به تمرین و مطالعه جدی دارید.";
+        resultMessage.style.color = "#ef4444";
+      }
+      
+      // ایجاد خلاصه پاسخ‌ها
+      const answersSummary = document.getElementById('answers-summary');
+      answersSummary.innerHTML = '';
+      
+      for (let i = 1; i <= totalQuestions; i++) {
+        const userAnswer = userAnswers[i - 1];
+        const correctAnswer = answers[`q${i}`];
+        const isCorrect = userAnswer === correctAnswer;
+        
+        const answerItem = document.createElement("div");
+        answerItem.classList.add("answer-item");
+        
+        let statusText = "";
+        if (userAnswer === null) {
+          statusText = `سوال ${i}: بدون پاسخ`;
+          answerItem.classList.add("answer-unanswered");
+        } else if (isCorrect) {
+          statusText = `سوال ${i}: صحیح (پاسخ شما: ${userAnswer})`;
+          answerItem.classList.add("answer-correct");
+        } else {
+          statusText = `سوال ${i}: نادرست (پاسخ شما: ${userAnswer} | پاسخ صحیح: ${correctAnswer})`;
+          answerItem.classList.add("answer-incorrect");
+        }
+        
+        answerItem.textContent = statusText;
+        answersSummary.appendChild(answerItem);
+      }
+      
+      // نمایش پنل نتایج
+      document.getElementById('final-result').style.display = 'block';
+      document.getElementById('final-result').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // تابع شروع مجدد
+    function restartQuiz() {
+      if (confirm('آیا می‌خواهید آزمون را مجدداً شروع کنید؟')) {
+        score = 0;
+        answeredQuestions = 0;
+        questionStates.fill(false);
+        userAnswers.fill(null);
+        
+        // ریست همه سوالات
+        for (let i = 1; i <= totalQuestions; i++) {
+          const questionDiv = document.getElementById(`q${i}`);
+          const statusElement = document.getElementById(`status${i}`);
+          const feedbackDiv = document.getElementById(`feedback${i}`);
+          
+          statusElement.textContent = "بدون پاسخ";
+          statusElement.classList.remove("answered");
+          feedbackDiv.textContent = "";
+          feedbackDiv.className = "feedback";
+          
+          const options = questionDiv.querySelectorAll('.option');
+          options.forEach(option => {
+            const input = option.querySelector('input');
+            input.disabled = false;
+            input.checked = false;
+            option.classList.remove("correct", "incorrect", "disabled");
+          });
+        }
+        
+        updateDisplay();
+        
+        // مخفی کردن نتایج
+        document.getElementById('final-result').style.display = 'none';
+      }
+    }
+
+    // تابع ذخیره و بازگشت
+    function saveAndReturn() {
+      saveScore();
+      window.location.href = 'index.html';
+    }
+
+    // هنگام لود صفحه
+    document.addEventListener('DOMContentLoaded', function() {
+      updateDisplay();
+      
+      // اضافه کردن رویداد به همه رادیو باتن‌ها
+      document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          const questionNum = parseInt(this.name.replace('q', ''));
+          handleAnswerSelection(questionNum, this.value);
+        });
+      });
+      
+      // غیرفعال کردن دکمه ارسال در ابتدا
+      document.getElementById('submit-btn').disabled = true;
+    });
+  </script>
+</body>
+</html>
